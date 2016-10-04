@@ -1,0 +1,155 @@
+<html ng-app="store">
+
+<head>
+	<meta charset="utf-8">
+	<title>Curso mijo</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style type="text/css">
+		.color {
+			background: red;
+		}
+		.ng-invalid.ng-dirty{
+			border-color: red;
+		}
+		.ng-valid.ng-dirty{
+			border-color: green;
+		}
+		.ng-pristine{
+			border-color: yellow;
+		}
+	</style>
+</head>
+
+<body>
+
+	<section style="width:80%; margin:0 auto;">
+		<h2>
+		MA PRENDE LA RADIO QUE ESTOY EN LA TELE
+	</h2>
+		<div ng-controller="StoreController as store">
+
+			<div ng-repeat="product in store.products">
+
+				<div class="container" ng-controller="panelController as panel">
+					<ul class="nav nav-pills">
+						<li ng-class="{ active:panel.isActive(1)}">
+							<a href ng-click="panel.selectTab(1)">Nombre</a>
+						</li>
+						<li ng-class="{ active:panel.isActive(2)}">
+							<a href ng-click="panel.selectTab(2)">Descripción</a>
+						</li>
+						<li ng-class="{ disabled:panel.isActive(3)}">
+							<a href ng-click="panel.selectTab(3)">Precio</a>
+						</li>
+					</ul>
+					<button ng-show="product.canBuy">Compra porfa</button>
+
+					<div class="panel" ng-show="panel.tab===1">
+						<h4>{{product.name}}</h4>
+					</div>
+					<div class="panel" ng-show="panel.isActive(2)">
+						<h4>{{product.desc}}</h4>
+					</div>
+					<div class="panel" ng-show="panel.isActive(3)">
+						<h4>{{product.price}}</h4>
+					</div>
+				</div>
+
+				<div ng-controller="ReviewController as reviewCtrl">
+					<ul class="list-group">
+						<li ng-repeat="review in product.comments" class="list-group-item">
+							<span class="badge">{{review.stars}}</span> {{review.body}}
+						</li>
+						<li class="list-group-item">
+							<span class="badge">{{reviewCtrl.review.stars}}</span> {{reviewCtrl.review.body}}
+						</li>
+					</ul>
+					<form name="lolForm" ng-submit="lolForm.$valid && reviewCtrl.submitReview(product)" novalidate>
+						<div class="input-group">
+
+							<input ng-model="reviewCtrl.review.stars" type="number" class="form-control" placeholder="Estrellas"
+							aria-describedby="basic-addon1" required min="1">
+
+							<input ng-model="reviewCtrl.review.body" type="email" class="form-control" placeholder="Email"
+							aria-describedby="basic-addon2" required>
+							<input type="submit" value="Comenta">
+
+						</div>
+						<div>El formulario es {{lolForm.$valid}}</div>
+						<div ng-hide="lolForm.$valid" class="alert alert-danger" role="alert">Idiota asi no es =_=</div>
+						<div ng-show="lolForm.$valid" class="alert alert-success" role="alert">Muy bien mocoso</div>
+						</div>
+					</form>
+				</div>
+				<!-- ng-controller-->
+			</div>
+
+		</div>
+	</section>
+
+	<script src="http://code.jquery.com/jquery-3.1.1.min.js"
+	integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+	integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		(function() {
+			var app = angular.module('store', []);
+			app.controller('StoreController', StoreController);
+
+			function StoreController() {
+				this.products = gems;
+			};
+			app.controller('panelController', function() {
+				this.tab = 1;
+				this.selectTab = function(setTab) {
+					this.tab = setTab;
+				};
+				this.isActive = function(checkTab) {
+					return this.tab === checkTab;
+				}
+			});
+			app.controller('ReviewController', function() {
+				this.review = {};
+				this.submitReview = function(product) {
+					product.comments.push(this.review);
+					this.review = {};
+				};
+			})
+			var gems = [{
+				name: 'Saul',
+				desc: 'genial',
+				price: 100000000000000000000000,
+				canBuy: true,
+				comments: [{
+					stars: 5,
+					body: "mucho",
+					author: 'yo'
+				}, {
+					stars: 4,
+					body: "cuerpo",
+					author: 'yo'
+				}]
+			}, {
+				name: "Raul",
+				desc: "ninguna",
+				price: 8800,
+				canBuy: false,
+				comments: [{
+					stars: 5,
+					body: "Ya se fue Saul",
+					author: 'yo otra ves'
+				}, {
+					stars: 4,
+					body: "Quieren drogas",
+					author: 'yo de nuevo'
+				}]
+			}];
+		})();
+	</script>
+</body>
+
+</html>
